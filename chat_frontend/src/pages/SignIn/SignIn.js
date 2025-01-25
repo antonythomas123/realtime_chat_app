@@ -5,47 +5,53 @@ import {
   RemoveRedEyeOutlined,
   VisibilityOffOutlined,
 } from "@mui/icons-material";
+import { styles } from "./SignIn.styles";
+import { useNavigate } from "react-router-dom";
 
 function SignIn() {
+  const navigate = useNavigate();
+
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [errors, setErrors] = useState(null);
+
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSignIn = () => {
+    if (!credentials?.username || !credentials?.password) {
+      setErrors({
+        username: !credentials?.username ? "Username is required" : "",
+        password: !credentials?.password ? "Password is required" : "",
+      });
+      return;
+    }
+  };
 
   return (
-    <Grid2
-      container
-      component={Card}
-      elevation={1}
-      sx={{
-        // height: { xs: "300px", lg: "400px" },
-        width: { xs: "300px", lg: "500px" },
-        padding: "12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap: "12px",
-        borderRadius: "16px",
-      }}
-    >
-      <Typography sx={{ color: "#02142E", fontWeight: 600, fontSize: "20px" }}>
-        Sign In
-      </Typography>
-      <Grid2
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          width: "100%",
-        }}
-      >
-        <CustomTextField label={"Username or Email"} />
+    <Grid2 container component={Card} elevation={1} sx={styles.mainContainer}>
+      <Typography sx={styles.title}>Sign In</Typography>
+      <Grid2 item xs={12} sx={styles.fieldContainer}>
+        <CustomTextField
+          label={"Username or Email"}
+          name={"username"}
+          value={credentials?.username}
+          onChange={handleChange}
+          error={!!errors?.username}
+          helperText={errors?.username}
+        />
         <CustomTextField
           label={"Password"}
+          name={"password"}
+          value={credentials?.password}
+          onChange={handleChange}
           type={isShowPassword ? "text" : "password"}
           endIcon={
             isShowPassword ? (
@@ -54,38 +60,20 @@ function SignIn() {
               <RemoveRedEyeOutlined />
             )
           }
+          error={!!errors?.password}
           endIconClick={() => setIsShowPassword(!isShowPassword)}
+          helperText={errors?.password}
         />
       </Grid2>
 
-      <Grid2
-        item
-        xs={12}
-        sx={{
-          width: "100%",
-          marginTop: "16px",
-          display: "flex",
-          gap: "12px",
-          flexDirection: "column",
-        }}
-      >
-        <CustomButton buttonText={"Sign in"} />
+      <Grid2 item xs={12} sx={styles.buttonContainer}>
+        <CustomButton buttonText={"Sign in"} onClick={() => handleSignIn()} />
 
-        <Link
-          style={{
-            color: "#0B69F4",
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-        >
+        <Link style={styles.dontHave} onClick={() => navigate("/sign-up")}>
           Don't have an account ? Create one.
         </Link>
 
-        <Link
-          sx={{ textDecoration: "none", cursor: "pointer", color: "#0B69F4" }}
-        >
-          Forgot Password
-        </Link>
+        <Link sx={styles.dontHave}>Forgot Password</Link>
       </Grid2>
     </Grid2>
   );

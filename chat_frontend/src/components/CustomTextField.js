@@ -3,20 +3,26 @@ import { InputAdornment, TextField } from "@mui/material";
 
 export const CustomTextField = ({
   label,
+  name,
   value,
   onChange,
   type,
   endIcon,
   endIconClick,
+  helperText,
+  error,
 }) => {
   return (
     <TextField
       label={label}
+      name={name}
       value={value}
       onChange={onChange}
       fullWidth
       type={type}
+      helperText={helperText}
       variant="filled"
+      error={error}
       slotProps={{
         input: {
           disableUnderline: true,
@@ -30,7 +36,7 @@ export const CustomTextField = ({
           ) : null,
           sx: {
             background: "#FFFFFF",
-            border: "1px solid #E6E7EA",
+            border: error ? "1px solid #d32f2f" : "1px solid #E6E7EA",
             borderRadius: "4px",
           },
         },

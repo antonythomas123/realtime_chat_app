@@ -5,47 +5,92 @@ import {
   RemoveRedEyeOutlined,
   VisibilityOffOutlined,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import { styles } from "./SignUp.styles";
 
 function SignUp() {
+  const navigate = useNavigate();
+
+  const [credentials, setCredentials] = useState({
+    username: "",
+    fname: "",
+    lname: "",
+    password: "",
+    confirmPass: "",
+  });
   const [isShowPassword, setIsShowPassword] = useState({
     password: false,
     confirm: false,
   });
+  const [errors, setErrors] = useState(null);
+
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSignUp = () => {
+    if (
+      !credentials?.username ||
+      !credentials?.password ||
+      !credentials?.fname ||
+      !credentials?.lname ||
+      !credentials?.confirmPass
+    ) {
+      setErrors({
+        username: !credentials?.username ? "Username is required" : "",
+        fname: !credentials?.fname ? "First name is required" : "",
+        lname: !credentials?.lname ? "Last name is required" : "",
+        password: !credentials?.password ? "Password is required" : "",
+        confirmPass: !credentials?.confirmPass
+          ? "Please enter the password again"
+          : credentials?.confirmPass !== credentials?.password
+          ? "Passwords does not match"
+          : "",
+      });
+      return;
+    }
+  };
 
   return (
-    <Grid2
-      container
-      component={Card}
-      elevation={1}
-      sx={{
-        width: { xs: "300px", lg: "500px" },
-        padding: "12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap: "12px",
-        borderRadius: "16px",
-      }}
-    >
-      <Typography sx={{ color: "#02142E", fontWeight: 600, fontSize: "20px" }}>
-        Sign Up
-      </Typography>
+    <Grid2 container component={Card} elevation={1} sx={styles.mainContainer}>
+      <Typography sx={styles.title}>Sign Up</Typography>
 
-      <Grid2
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          width: "100%",
-        }}
-      >
-        <CustomTextField label={"Username or email"} value={""} />
+      <Grid2 item xs={12} sx={styles.fieldContainer}>
+        <CustomTextField
+          label={"Username or email"}
+          name={"username"}
+          value={credentials?.username}
+          onChange={handleChange}
+          error={!!errors?.username}
+          helperText={errors?.username}
+        />
+
+        <CustomTextField
+          label={"First name"}
+          name={"fname"}
+          value={credentials?.fname}
+          onChange={handleChange}
+          error={!!errors?.fname}
+          helperText={errors?.fname}
+        />
+
+        <CustomTextField
+          label={"Last name"}
+          name={"lname"}
+          value={credentials?.lname}
+          onChange={handleChange}
+          error={!!errors?.lname}
+          helperText={errors?.lname}
+        />
 
         <CustomTextField
           label={"Password"}
+          name={"password"}
+          value={credentials?.password}
+          onChange={handleChange}
           type={isShowPassword?.password ? "text" : "password"}
           endIcon={
             isShowPassword?.password ? (
@@ -54,10 +99,21 @@ function SignUp() {
               <RemoveRedEyeOutlined />
             )
           }
+          endIconClick={() =>
+            setIsShowPassword((prev) => ({
+              ...prev,
+              password: !prev?.password,
+            }))
+          }
+          error={!!errors?.password}
+          helperText={errors?.password}
         />
 
         <CustomTextField
           label={"Confirm password"}
+          value={credentials?.confirmPass}
+          name={"confirmPass"}
+          onChange={handleChange}
           type={isShowPassword?.confirm ? "text" : "password"}
           endIcon={
             isShowPassword?.confirm ? (
@@ -66,29 +122,21 @@ function SignUp() {
               <RemoveRedEyeOutlined />
             )
           }
+          endIconClick={() =>
+            setIsShowPassword((prev) => ({
+              ...prev,
+              confirm: !prev?.confirm,
+            }))
+          }
+          error={!!errors?.confirmPass}
+          helperText={errors?.confirmPass}
         />
       </Grid2>
 
-      <Grid2
-        item
-        xs={12}
-        sx={{
-          width: "100%",
-          marginTop: "16px",
-          display: "flex",
-          gap: "12px",
-          flexDirection: "column",
-        }}
-      >
-        <CustomButton buttonText={"Sign up"} />
+      <Grid2 item xs={12} sx={styles.buttonContainer}>
+        <CustomButton buttonText={"Sign up"} onClick={() => handleSignUp()} />
 
-        <Link
-          style={{
-            color: "#0B69F4",
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-        >
+        <Link style={styles.haveAccount} onClick={() => navigate("/login")}>
           Have an account ? Login.
         </Link>
       </Grid2>
