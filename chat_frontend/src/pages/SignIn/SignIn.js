@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Card, Grid2, Link, Typography } from "@mui/material";
 import { CustomButton, CustomTextField } from "../../components";
 import {
@@ -7,9 +7,13 @@ import {
 } from "@mui/icons-material";
 import { styles } from "./SignIn.styles";
 import { useNavigate } from "react-router-dom";
+import { login } from "../../services.js/auth.services";
+import { store } from "../../providers/AuthProvider";
 
 function SignIn() {
   const navigate = useNavigate();
+
+  const { isLoggedIn, setIsLoggedIn } = useContext(store);
 
   const [credentials, setCredentials] = useState({
     username: "",
@@ -25,13 +29,26 @@ function SignIn() {
     });
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (!credentials?.username || !credentials?.password) {
       setErrors({
         username: !credentials?.username ? "Username is required" : "",
         password: !credentials?.password ? "Password is required" : "",
       });
       return;
+    }
+
+    try {
+      const response = await login(credentials);
+
+      if (response?.userId && response?.token) {
+        setIsLoggedIn(true);
+        localStorage.setItem("token", response?.token);
+        localStorage.setItem("userId", response?.userId);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error, "er");
     }
   };
 

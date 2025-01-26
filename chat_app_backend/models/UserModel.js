@@ -19,6 +19,9 @@ const UserSchema = new mongoose.Schema({
   lname: {
     type: String,
     required: [true, "Please provide a last name"]
+  },
+  profileImg: {
+    type: String
   }
 });
 

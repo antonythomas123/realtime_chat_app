@@ -7,6 +7,7 @@ import {
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { styles } from "./SignUp.styles";
+import { register } from "../../services.js/auth.services";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -31,7 +32,7 @@ function SignUp() {
     });
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (
       !credentials?.username ||
       !credentials?.password ||
@@ -51,6 +52,21 @@ function SignUp() {
           : "",
       });
       return;
+    }
+
+    try {
+      const payload = {
+        username: credentials?.username,
+        password: credentials?.password,
+        fname: credentials?.fname,
+        lname: credentials?.lname,
+      };
+
+      const response = await register(payload);
+
+      navigate('/login')
+    } catch (error) {
+      console.log(error);
     }
   };
 
