@@ -1,91 +1,116 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Card, Grid2, Link, Typography } from "@mui/material";
 import { CustomButton, CustomTextField } from "../../components";
 import {
   RemoveRedEyeOutlined,
   VisibilityOffOutlined,
 } from "@mui/icons-material";
+import { styles } from "./SignIn.styles";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../services.js/auth.services";
+import { store } from "../../providers/AuthProvider";
+import { LandingCover, LandingGif } from "../../assets";
 
 function SignIn() {
+  const navigate = useNavigate();
+
+  const { isLoggedIn, setIsLoggedIn } = useContext(store);
+
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [errors, setErrors] = useState(null);
+
+  const handleChange = (e) => {
+    setCredentials({
+      ...credentials,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSignIn = async () => {
+    if (!credentials?.username || !credentials?.password) {
+      setErrors({
+        username: !credentials?.username ? "Username is required" : "",
+        password: !credentials?.password ? "Password is required" : "",
+      });
+      return;
+    }
+
+    try {
+      const response = await login(credentials);
+
+      if (response?.userId && response?.token) {
+        setIsLoggedIn(true);
+        localStorage.setItem("token", response?.token);
+        localStorage.setItem("userId", response?.userId);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log(error, "er");
+    }
+  };
 
   return (
-    <Grid2
-      container
-      component={Card}
-      elevation={1}
-      sx={{
-        // height: { xs: "300px", lg: "400px" },
-        width: { xs: "300px", lg: "500px" },
-        padding: "12px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexDirection: "column",
-        gap: "12px",
-        borderRadius: "16px",
-      }}
-    >
-      <Typography sx={{ color: "#02142E", fontWeight: 600, fontSize: "20px" }}>
-        Sign In
-      </Typography>
-      <Grid2
-        item
-        xs={12}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          width: "100%",
-        }}
-      >
-        <CustomTextField label={"Username or Email"} />
-        <CustomTextField
-          label={"Password"}
-          type={isShowPassword ? "text" : "password"}
-          endIcon={
-            isShowPassword ? (
-              <VisibilityOffOutlined />
-            ) : (
-              <RemoveRedEyeOutlined />
-            )
-          }
-          endIconClick={() => setIsShowPassword(!isShowPassword)}
-        />
+    <Grid2 container sx={{ display: "flex", gap: "24px" }}>
+      <Grid2 item lg={12}>
+        <img src={LandingGif} alt="" />
       </Grid2>
 
       <Grid2
         item
-        xs={12}
+        lg={12}
         sx={{
-          width: "100%",
-          marginTop: "16px",
           display: "flex",
-          gap: "12px",
-          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <CustomButton buttonText={"Sign in"} />
+        <Grid2 container elevation={1} sx={styles.mainContainer}>
+          <Typography sx={styles.title}>Sign In</Typography>
+          <Grid2 item xs={12} sx={styles.fieldContainer}>
+            <CustomTextField
+              label={"Username or Email"}
+              name={"username"}
+              value={credentials?.username}
+              onChange={handleChange}
+              error={!!errors?.username}
+              helperText={errors?.username}
+            />
+            <CustomTextField
+              label={"Password"}
+              name={"password"}
+              value={credentials?.password}
+              onChange={handleChange}
+              type={isShowPassword ? "text" : "password"}
+              endIcon={
+                isShowPassword ? (
+                  <VisibilityOffOutlined />
+                ) : (
+                  <RemoveRedEyeOutlined />
+                )
+              }
+              error={!!errors?.password}
+              endIconClick={() => setIsShowPassword(!isShowPassword)}
+              helperText={errors?.password}
+            />
+          </Grid2>
 
-        <Link
-          style={{
-            color: "#0B69F4",
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-        >
-          Don't have an account ? Create one.
-        </Link>
+          <Grid2 item xs={12} sx={styles.buttonContainer}>
+            <CustomButton
+              buttonText={"Sign in"}
+              onClick={() => handleSignIn()}
+            />
 
-        <Link
-          sx={{ textDecoration: "none", cursor: "pointer", color: "#0B69F4" }}
-        >
-          Forgot Password
-        </Link>
+            <Link style={styles.dontHave} onClick={() => navigate("/sign-up")}>
+              Don't have an account ? Create one.
+            </Link>
+
+            <Link sx={styles.dontHave}>Forgot Password</Link>
+          </Grid2>
+        </Grid2>
       </Grid2>
     </Grid2>
   );

@@ -4,11 +4,13 @@ export const CustomButton = ({
   buttonText,
   onClick,
   variant = "contained",
+  disabled
 }) => {
   return (
     <Button
       fullWidth
       variant={variant}
+      disabled={disabled}
       sx={{
         textTransform: "none",
         background: "#0B69F4",

@@ -1,8 +1,8 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import "./App.css";
-import { Dashboard, SignIn, SignUp } from "./pages";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ProtectedRoute } from "./utils/ProtectedRoute";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./providers/AuthProvider";
+import RoutesConfig from "./routes/Routes";
 
 const theme = createTheme({
   typography: {
@@ -13,22 +13,13 @@ const theme = createTheme({
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <ThemeProvider theme={theme}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />} />
-          </Routes>
-        </ThemeProvider>
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={theme}>
+            <RoutesConfig />
+          </ThemeProvider>
+        </BrowserRouter>
+      </AuthProvider>
     </div>
   );
 }
