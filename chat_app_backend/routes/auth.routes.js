@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/register", encryptPassword, async (req, res) => {
   try {
-    const { username, password, fname, lname } = req.body;
+    const { username, password, fname, lname, profileImg } = req.body;
 
     if (username) {
       const existingUser = await User.findOne({ username });
@@ -21,7 +21,7 @@ router.post("/register", encryptPassword, async (req, res) => {
     }
 
     if (password) {
-      const newUser = new User({ username, password, fname, lname });
+      const newUser = new User({ username, password, fname, lname, profileImg });
 
       await newUser.save();
 

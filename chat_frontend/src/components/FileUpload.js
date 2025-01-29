@@ -1,5 +1,5 @@
 import { AttachFile } from "@mui/icons-material";
-import React, { useRef } from "react";
+import React from "react";
 
 export const FileUpload = ({ ref, handleFileClick, handleFileChange }) => {
   return (
@@ -11,6 +11,7 @@ export const FileUpload = ({ ref, handleFileClick, handleFileChange }) => {
 
       <input
         type="file"
+        accept="image/*"
         style={{ display: "none" }}
         ref={ref}
         onChange={handleFileChange}

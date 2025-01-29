@@ -1,8 +1,7 @@
-import { Card, Grid2, Link, Typography } from "@mui/material";
+import { Grid2, Link, Typography } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { CustomButton, CustomTextField, FileUpload } from "../../components";
 import {
-  AttachFile,
   Close,
   RemoveRedEyeOutlined,
   VisibilityOffOutlined,
@@ -93,6 +92,7 @@ function SignUp() {
         password: credentials?.password,
         fname: credentials?.fname,
         lname: credentials?.lname,
+        profileImg: credentials?.image
       };
 
       const response = await register(payload);
@@ -102,7 +102,7 @@ function SignUp() {
       console.log(error);
     }
   };
-  console.log(credentials);
+
   return (
     <Grid2 container>
       <Grid2 item lg={12}>
