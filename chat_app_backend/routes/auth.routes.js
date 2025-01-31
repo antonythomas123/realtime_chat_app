@@ -2,7 +2,7 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import encryptPassword from "../middlewares/encryption.js";
-import User from "../models/userModel.js";
+import User from "../models/UserModel.js";
 
 const router = express.Router();
 

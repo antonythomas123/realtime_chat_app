@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: [true, "Please provide a username"],
-    unique: [true, "Username exist"],
+    unique: true,
   },
   password: {
     type: String,
@@ -14,15 +14,25 @@ const UserSchema = new mongoose.Schema({
   fname: {
     type: String,
     required: [true, "Please provide a first name"],
-    unique: false
+    unique: false,
   },
   lname: {
     type: String,
-    required: [true, "Please provide a last name"]
+    required: [true, "Please provide a last name"],
   },
   profileImg: {
-    type: String
-  }
+    type: String,
+  },
+  friends: [
+    {
+      friendId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
+      status: {
+        type: String,
+        enum: ["accepted", "rejected", "pending"],
+        default: "pending",
+      },
+    },
+  ],
 });
 
 const User = mongoose.model.Users || mongoose.model("Users", UserSchema);
