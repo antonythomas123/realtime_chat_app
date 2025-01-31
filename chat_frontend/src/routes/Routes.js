@@ -6,7 +6,7 @@ import AuthRoute from "../layouts/AuthRoute";
 const RoutesConfig = () => {
   const routes = [
     {
-      path: "/",
+      path: "/dashboard",
       component: Dashboard,
       isProtected: true,
       redirectTo: "/login",

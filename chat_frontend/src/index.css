@@ -21,6 +21,10 @@ html {
   font-family: jetbrains
 }
 
+span {
+  font-family: jetbrains
+}
+
 html,
 body,
 #root {
