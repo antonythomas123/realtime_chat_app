@@ -1,7 +1,8 @@
 import React from "react";
 import { UserCard } from "./UserCard";
+import { CustomSearch } from "./CustomSearch";
 
-function Sidebar() {
+function Sidebar({ users }) {
   return (
     <div
       style={{
@@ -10,25 +11,24 @@ function Sidebar() {
         boxShadow: "0 1px 3px rgba(11, 20, 26, 0.2)",
       }}
     >
-      <div style={{ padding: "12px", borderBottom: '1px solid #E6E7EA' }}>
-        <input
-          type="search"
-          placeholder="Search for a user"
-          style={{
-            height: "40px",
-            width: "100%",
-            borderRadius: "8px",
-            border: "1px solid #E6E7EA",
-            padding: "12px",
-            fontFamily: "jetbrains",
-            outline: "none",
-          }}
+      <div style={{ padding: "12px", borderBottom: "1px solid #E6E7EA" }}>
+        <CustomSearch 
+          placeholder={"Search for a user"}
         />
       </div>
 
-      <div>
-        <UserCard />
-      </div>
+      {users?.length > 0 ? (
+        <div>
+          <UserCard />
+        </div>
+      ) : (
+        <div style={{ padding: "12px", textAlign: "start" }}>
+          <span style={{ color: "#5B6675", fontSize: "12px", fontWeight: 400 }}>
+            You dont have any friends added. Please add a friend to start
+            chatting!
+          </span>
+        </div>
+      )}
     </div>
   );
 }

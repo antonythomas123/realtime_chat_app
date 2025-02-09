@@ -12,11 +12,13 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { QuestionAnswer } from "@mui/icons-material";
+import { ForumOutlined, PersonAddOutlined, QuestionAnswer } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function Navbar() {
+function Navbar({ showAddFriend, showDashboard }) {
+  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -43,7 +45,33 @@ function Navbar() {
             }}
           />
 
-          <Box>
+          <Box sx={{ display: "flex", gap: "12px" }}>
+            {showAddFriend && (
+              <Tooltip title="Search for friends">
+                <IconButton
+                  onClick={() => navigate("/add-friend")}
+                  sx={{ p: 0, display: "flex", gap: "8px" }}
+                >
+                  <span style={{ color: "#FFFFFF", fontSize: "12px" }}>
+                    Add a friend
+                  </span>
+                  <PersonAddOutlined sx={{ color: "#FFFFFF" }} />
+                </IconButton>
+              </Tooltip>
+            )}
+            {showDashboard && (
+              <Tooltip title="Search for friends">
+                <IconButton
+                  onClick={() => navigate("/dashboard")}
+                  sx={{ p: 0, display: "flex", gap: "8px" }}
+                >
+                  <span style={{ color: "#FFFFFF", fontSize: "12px" }}>
+                    Open my chats
+                  </span>
+                  <ForumOutlined sx={{ color: "#FFFFFF" }} />
+                </IconButton>
+              </Tooltip>
+            )}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />

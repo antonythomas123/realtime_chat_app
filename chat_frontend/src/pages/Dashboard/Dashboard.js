@@ -14,7 +14,7 @@ function Dashboard() {
   return (
     <Grid2 container>
       <Grid2 item size={12}>
-        <Navbar />
+        <Navbar showAddFriend={true} />
       </Grid2>
 
       <Grid2
@@ -25,7 +25,11 @@ function Dashboard() {
           display: "flex",
         }}
       >
-        <Grid2 container size={12} sx={{ display: "flex", overflow: "hidden", padding: '12px' }}>
+        <Grid2
+          container
+          size={12}
+          sx={{ display: "flex", overflow: "hidden", padding: "12px" }}
+        >
           <Grid2
             item
             size={4}
@@ -33,7 +37,7 @@ function Dashboard() {
               height: "100%",
             }}
           >
-            <Sidebar />
+            <Sidebar users={[]} />
           </Grid2>
 
           <Grid2
@@ -52,5 +56,3 @@ function Dashboard() {
 }
 
 export default Dashboard;
-
-

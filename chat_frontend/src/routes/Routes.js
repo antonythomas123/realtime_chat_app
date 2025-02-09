@@ -1,16 +1,10 @@
 import React from "react";
-import { Dashboard, SignIn, SignUp } from "../pages";
+import { AddFriend, Dashboard, SignIn, SignUp } from "../pages";
 import { Navigate, Route, Routes } from "react-router-dom";
 import AuthRoute from "../layouts/AuthRoute";
 
 const RoutesConfig = () => {
   const routes = [
-    {
-      path: "/dashboard",
-      component: Dashboard,
-      isProtected: true,
-      redirectTo: "/login",
-    },
     {
       path: "/login",
       component: SignIn,
@@ -22,6 +16,18 @@ const RoutesConfig = () => {
       component: SignUp,
       isProtected: false,
       redirectTo: "/",
+    },
+    {
+      path: "/dashboard",
+      component: Dashboard,
+      isProtected: false,
+      redirectTo: "/login",
+    },
+    {
+      path: "/add-friend",
+      component: AddFriend,
+      isProtected: false,
+      redirectTo: "/login",
     },
   ];
 
