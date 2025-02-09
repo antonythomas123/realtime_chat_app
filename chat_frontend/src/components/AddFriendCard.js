@@ -8,7 +8,7 @@ function AddFriendCard({ username, fname, lname, avatar, loading, status }) {
     <Card
       elevation={2}
       sx={{
-        height: "200px",
+        minHeight: "200px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -79,15 +79,43 @@ function AddFriendCard({ username, fname, lname, avatar, loading, status }) {
             position: "absolute",
             bottom: 0,
             left: 0,
+            width: "100%",
           }}
         >
-          <IconButton>
-            {status === "not_friends" || status === "rejected" ? (
+          {(status === "not_friends" || status === "rejected") && (
+            <IconButton>
               <PersonAddAlt1Outlined />
-            ) : (
-              <PersonOutlined />
-            )}
-          </IconButton>
+            </IconButton>
+          )}
+          {status === "pending" && (
+            <div style={{ display: "flex", gap: "4px", width: "100%" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "50%",
+                  padding: "8px",
+                  borderRight: "1px solid #E6E7EA",
+                  cursor: "pointer",
+                }}
+              >
+                <span style={{ color: "#0B69F4", fontSize: "12px" }}>
+                  Accept
+                </span>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  width: "50%",
+                  padding: "8px",
+                  cursor: "pointer",
+                }}
+              >
+                <span style={{ color: "red", fontSize: "12px" }}>Reject</span>
+              </div>
+            </div>
+          )}
         </Grid2>
       )}
     </Card>

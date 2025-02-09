@@ -1,9 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { ChatSection, Navbar, Sidebar } from "../../components";
 import { Grid2 } from "@mui/material";
+import { getAllFriends } from "../../services.js/dashboard.services";
 
 function Dashboard() {
   const fileRef = useRef(null);
+
+  const [friends, setFriends] = useState([])
 
   const handleFileClick = () => {
     if (fileRef.current) fileRef.current.click();
@@ -11,6 +14,19 @@ function Dashboard() {
 
   const handleFileChange = (e) => {};
 
+  const getFriends = async () => {
+    try {
+      const response = await getAllFriends();
+      setFriends(response?.data?.friends)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    getFriends()
+  }, [])
+console.log({friends})
   return (
     <Grid2 container>
       <Grid2 item size={12}>
@@ -37,7 +53,7 @@ function Dashboard() {
               height: "100%",
             }}
           >
-            <Sidebar users={[]} />
+            <Sidebar users={friends} />
           </Grid2>
 
           <Grid2

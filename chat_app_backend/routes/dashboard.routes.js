@@ -1,6 +1,5 @@
 import express from "express";
 import User from "../models/UserModel.js";
-import mongoose from "mongoose";
 
 const router = express.Router();
 
@@ -56,11 +55,6 @@ router.get("/non-friends/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    // Validate if userId is a valid MongoDB ObjectId
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
-
     // Find the current user
     const currentUser = await User.findById(userId);
     if (!currentUser) {
@@ -86,7 +80,7 @@ router.get("/non-friends/:userId", async (req, res) => {
       lname: user.lname,
       profileImg: user.profileImg,
       status: friendsMap.get(user._id.toString()) || "not_friends", // Default to "not_friends"
-    }));
+    })).filter((x => x.status !== "accepted"));
 
     return res.status(200).json({ users: result });
   } catch (error) {
@@ -94,5 +88,81 @@ router.get("/non-friends/:userId", async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+router.get("/get-all-friends/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const currentUser = await User.findById(userId).populate({
+      path: "friends.friendId",
+      select: "username fname lname profileImg",
+    });
+
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Filter only accepted friends and check if friendId exists
+    const friends = currentUser.friends
+      .filter((friend) => friend.status === "accepted" && friend.friendId) // Ensure friendId is not null
+      .map((friend) => ({
+        _id: friend.friendId._id,
+        username: friend.friendId.username,
+        fname: friend.friendId.fname,
+        lname: friend.friendId.lname,
+        profileImg: friend.friendId.profileImg,
+      }));
+
+    return res.status(200).json({ friends: friends });
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.get("/friend-requests/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Find user and populate requests
+    const currentUser = await User.findById(userId).populate({
+      path: "friends.friendId",
+      select: "username fname lname profileImg",
+    });
+
+    if (!currentUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const receivedRequests = currentUser.friends
+      .filter(friend => friend.status === "pending" && friend.friendId)
+      .map(friend => ({
+        _id: friend.friendId._id,
+        username: friend.friendId.username,
+        fname: friend.friendId.fname,
+        lname: friend.friendId.lname,
+        profileImg: friend.friendId.profileImg,
+        type: "received",
+        status: friend.status
+      }));
+
+    // const sentRequests = currentUser.friends
+    //   .filter(friend => friend.status === "pending" && friend.friendId && friend.sentBy.toString() === userId)
+    //   .map(friend => ({
+    //     _id: friend.friendId._id,
+    //     username: friend.friendId.username,
+    //     fname: friend.friendId.fname,
+    //     lname: friend.friendId.lname,
+    //     profileImg: friend.friendId.profileImg,
+    //     type: "sent",
+    //   }));
+
+    return res.status(200).json({ receivedRequests });
+  } catch (error) {
+    console.error("Error fetching friend requests:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
 
 export default router;

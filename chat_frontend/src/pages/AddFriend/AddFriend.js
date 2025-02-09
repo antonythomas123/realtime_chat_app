@@ -7,6 +7,7 @@ import {
   Navbar,
 } from "../../components";
 import {
+  getAllFriendRequests,
   getAllNonFriends,
 } from "../../services.js/add-friend.services";
 
@@ -14,6 +15,7 @@ function AddFriend() {
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [friendRequests, setFriendRequests] = useState([]);
 
   const filteredUsers =
     users?.filter(
@@ -36,8 +38,18 @@ function AddFriend() {
     }
   };
 
+  const getFriendRequests = async () => {
+    try {
+      const response = await getAllFriendRequests();
+      setFriendRequests(response?.data?.receivedRequests);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     getUsers();
+    getFriendRequests();
   }, []);
 
   return (
@@ -50,7 +62,7 @@ function AddFriend() {
         <Typography
           sx={{
             color: "#02142E",
-            fontSize: "18px",
+            fontSize: "24px",
             fontWeight: 600,
             marginBottom: "12px",
           }}
@@ -67,7 +79,61 @@ function AddFriend() {
         <Grid2
           item
           size={12}
-          sx={{ mt: "12px", display: "flex", gap: "12px", flexWrap: "wrap" }}
+          sx={{
+            margin: "24px 0px 24px 0px",
+            borderTop: "1px solid #E6E7EA",
+            padding: "12px 0px 12px 0px",
+            borderBottom: "1px solid #E6E7EA",
+          }}
+        >
+          <Typography
+            sx={{ color: "#02142E", fontSize: "18px", fontWeight: 600 }}
+          >
+            Friend Requests
+          </Typography>
+
+          <Grid2 container>
+            {!loading && friendRequests?.length === 0 && (
+              <div style={{ marginTop: "24px" }}>
+                <span
+                  style={{
+                    color: "#5B6675",
+                    fontSize: "12px",
+                    fontWeight: 400,
+                  }}
+                >
+                  No friend request found!
+                </span>
+              </div>
+            )}
+
+            {friendRequests?.map((request) => {
+              return <AddFriendCard 
+                fname={request?.fname}
+                lname={request?.lname}
+                username={request?.username}
+                avatar={request?.profileImg}
+                
+              />;
+            })}
+          </Grid2>
+        </Grid2>
+
+        <Typography
+          sx={{ color: "#02142E", fontSize: "18px", fontWeight: 600 }}
+        >
+          Available users
+        </Typography>
+
+        <Grid2
+          item
+          size={12}
+          sx={{
+            mt: "12px",
+            display: "flex",
+            gap: "12px",
+            flexWrap: "wrap",
+          }}
         >
           {loading && (
             <CustomSkeleton
@@ -91,7 +157,7 @@ function AddFriend() {
               );
             })}
 
-          {filteredUsers?.length === 0 && (
+          {!loading && filteredUsers?.length === 0 && (
             <div>
               <span
                 style={{ color: "#5B6675", fontSize: "12px", fontWeight: 400 }}

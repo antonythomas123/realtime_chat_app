@@ -12,14 +12,16 @@ function Sidebar({ users }) {
       }}
     >
       <div style={{ padding: "12px", borderBottom: "1px solid #E6E7EA" }}>
-        <CustomSearch 
-          placeholder={"Search for a user"}
-        />
+        <CustomSearch placeholder={"Search for a user"} />
       </div>
 
       {users?.length > 0 ? (
         <div>
-          <UserCard />
+          {users?.map((user) => {
+            return (
+              <UserCard profile={user?.profileImg} name={user?.username} />
+            );
+          })}
         </div>
       ) : (
         <div style={{ padding: "12px", textAlign: "start" }}>

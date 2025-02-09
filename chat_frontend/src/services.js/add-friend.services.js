@@ -33,3 +33,21 @@ export const getAllNonFriends = async () => {
     throw error;
   }
 };
+
+export const getAllFriendRequests = async () => {
+  const userId = localStorage.getItem("userId") || "679a48c7a473ee8514526800";
+  try {
+    const response = await axios.get(
+      `${BASE_URL}/dashboard/friend-requests/${userId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
