@@ -23,16 +23,6 @@ const UserSchema = new mongoose.Schema({
   profileImg: {
     type: String,
   },
-  friends: [
-    {
-      friendId: { type: mongoose.Schema.Types.ObjectId, ref: "Users" },
-      status: {
-        type: String,
-        enum: ["accepted", "rejected", "pending"],
-        default: "pending",
-      },
-    },
-  ],
 });
 
 const User = mongoose.model.Users || mongoose.model("Users", UserSchema);
