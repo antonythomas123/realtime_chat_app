@@ -9,6 +9,7 @@ import {
 import {
   getAllFriendRequests,
   getAllNonFriends,
+  sendFriendRequest,
 } from "../../services.js/add-friend.services";
 
 function AddFriend() {
@@ -30,7 +31,7 @@ function AddFriend() {
       setLoading(true);
       const response = await getAllNonFriends();
 
-      setUsers(response?.data?.users);
+      setUsers(response?.data?.nonFriends);
     } catch (e) {
       console.log(e);
     } finally {
@@ -47,11 +48,30 @@ function AddFriend() {
     }
   };
 
+  const handleSendFriendRequest = async (friendId) => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        from: localStorage.userId,
+        to: friendId,
+        status: "pending",
+      };
+      const response = await sendFriendRequest(payload);
+
+      getFriendRequests()
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     getUsers();
     getFriendRequests();
   }, []);
 
+  console.log({friendRequests})
   return (
     <Grid2 container>
       <Grid2 item size={12}>
@@ -108,13 +128,15 @@ function AddFriend() {
             )}
 
             {friendRequests?.map((request) => {
-              return <AddFriendCard 
-                fname={request?.fname}
-                lname={request?.lname}
-                username={request?.username}
-                avatar={request?.profileImg}
-                
-              />;
+              return (
+                <AddFriendCard
+                  fname={request?.from?.fname}
+                  lname={request?.from?.lname}
+                  username={request?.from?.username}
+                  avatar={request?.from?.profileImg}
+                  status={request?.status}
+                />
+              );
             })}
           </Grid2>
         </Grid2>
@@ -147,12 +169,15 @@ function AddFriend() {
             filteredUsers?.map((user) => {
               return (
                 <AddFriendCard
+                  key={user?._id}
+                  id={user?._id}
                   fname={user?.fname}
                   lname={user?.lname}
                   username={user?.username}
                   avatar={user?.profileImg}
                   loading={loading}
-                  status={user?.status}
+                  status={"not_friends"}
+                  onSendFriendRequest={handleSendFriendRequest}
                 />
               );
             })}

@@ -3,7 +3,16 @@ import { Avatar, Card, Grid2, IconButton, Typography } from "@mui/material";
 import React from "react";
 import { CustomSkeleton } from "./CustomSkeleton";
 
-function AddFriendCard({ username, fname, lname, avatar, loading, status }) {
+function AddFriendCard({
+  id,
+  username,
+  fname,
+  lname,
+  avatar,
+  loading,
+  status,
+  onSendFriendRequest,
+}) {
   return (
     <Card
       elevation={2}
@@ -59,7 +68,12 @@ function AddFriendCard({ username, fname, lname, avatar, loading, status }) {
             borderRadius={"4px"}
           />
         ) : (
-          <Typography sx={{ color: "#5B6675", fontSize: "12px" }}>
+          <Typography
+            sx={{
+              color: "#5B6675",
+              fontSize: "12px",
+            }}
+          >
             @ {username}
           </Typography>
         )}
@@ -83,7 +97,7 @@ function AddFriendCard({ username, fname, lname, avatar, loading, status }) {
           }}
         >
           {(status === "not_friends" || status === "rejected") && (
-            <IconButton>
+            <IconButton onClick={() => onSendFriendRequest(id)}>
               <PersonAddAlt1Outlined />
             </IconButton>
           )}

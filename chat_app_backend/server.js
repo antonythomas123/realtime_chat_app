@@ -5,6 +5,7 @@ import cors from "cors";
 import { dbConnect } from "./db/dbConnect.js";
 import authRoutes from "./routes/auth.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
+import friendRequestRoutes from './routes/friend-requests.routes.js'
 import auth from "./auth.js";
 
 const app = express();
@@ -30,6 +31,7 @@ app.get("/protected", auth, (req, res) => {
 });
 
 app.use("/dashboard", dashboardRoutes);
+app.use("/friend-request", friendRequestRoutes)
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

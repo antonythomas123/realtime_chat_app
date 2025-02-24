@@ -23,6 +23,12 @@ const UserSchema = new mongoose.Schema({
   profileImg: {
     type: String,
   },
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Users",
+    },
+  ],
 });
 
 const User = mongoose.model.Users || mongoose.model("Users", UserSchema);
