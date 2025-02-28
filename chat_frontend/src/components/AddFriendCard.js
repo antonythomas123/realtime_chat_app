@@ -1,7 +1,6 @@
-import { PersonAddAlt1Outlined, PersonOutlined } from "@mui/icons-material";
+import { PersonAddAlt1Outlined } from "@mui/icons-material";
 import { Avatar, Card, Grid2, IconButton, Typography } from "@mui/material";
 import React from "react";
-import { CustomSkeleton } from "./CustomSkeleton";
 
 function AddFriendCard({
   id,
@@ -12,6 +11,8 @@ function AddFriendCard({
   loading,
   status,
   onSendFriendRequest,
+  onAcceptOrReject,
+  friendRequestId,
 }) {
   return (
     <Card
@@ -36,38 +37,19 @@ function AddFriendCard({
           alignItems: "center",
         }}
       >
-        {loading ? (
-          <CustomSkeleton
-            variant={"rounded"}
-            height={"60px"}
-            width={"60px"}
-            borderRadius={"100%"}
-          />
-        ) : (
-          <Avatar sx={{ height: "60px", width: "60px" }} src={avatar} alt="" />
-        )}
+        <Avatar sx={{ height: "60px", width: "60px" }} src={avatar} alt="" />
 
-        {loading ? (
-          <CustomSkeleton
-            variant={"rectangular"}
-            height={"16px"}
-            width={"100%"}
-            borderRadius={"4px"}
-          />
-        ) : (
-          <Typography>
-            {fname} {lname}
-          </Typography>
-        )}
+        <Typography>
+          {fname} {lname}
+        </Typography>
 
-        {loading ? (
-          <CustomSkeleton
-            variant={"rectangular"}
-            height={"16px"}
-            width={"100%"}
-            borderRadius={"4px"}
-          />
-        ) : (
+        <Grid2
+          sx={{
+            padding: "0px 12px 8px 12px",
+            textAlign: "center",
+            wordBreak: "break-all",
+          }}
+        >
           <Typography
             sx={{
               color: "#5B6675",
@@ -76,7 +58,7 @@ function AddFriendCard({
           >
             @ {username}
           </Typography>
-        )}
+        </Grid2>
       </Grid2>
 
       {!loading && (
@@ -96,7 +78,7 @@ function AddFriendCard({
             width: "100%",
           }}
         >
-          {(status === "not_friends" || status === "rejected") && (
+          {(!status || status === "rejected") && (
             <IconButton onClick={() => onSendFriendRequest(id)}>
               <PersonAddAlt1Outlined />
             </IconButton>
@@ -112,6 +94,7 @@ function AddFriendCard({
                   borderRight: "1px solid #E6E7EA",
                   cursor: "pointer",
                 }}
+                onClick={() => onAcceptOrReject(friendRequestId, "accepted")}
               >
                 <span style={{ color: "#0B69F4", fontSize: "12px" }}>
                   Accept
@@ -125,6 +108,7 @@ function AddFriendCard({
                   padding: "8px",
                   cursor: "pointer",
                 }}
+                onClick={() => onAcceptOrReject(friendRequestId, "rejected")}
               >
                 <span style={{ color: "red", fontSize: "12px" }}>Reject</span>
               </div>

@@ -7,8 +7,9 @@ import {
   Navbar,
 } from "../../components";
 import {
+  acceptOrRejectRequest,
   getAllFriendRequests,
-  getAllNonFriends,
+  getAllUsers,
   sendFriendRequest,
 } from "../../services.js/add-friend.services";
 
@@ -29,9 +30,9 @@ function AddFriend() {
   const getUsers = async () => {
     try {
       setLoading(true);
-      const response = await getAllNonFriends();
+      const response = await getAllUsers();
 
-      setUsers(response?.data?.nonFriends);
+      setUsers(response?.data?.users);
     } catch (e) {
       console.log(e);
     } finally {
@@ -59,8 +60,26 @@ function AddFriend() {
       };
       const response = await sendFriendRequest(payload);
 
-      getFriendRequests()
+      getFriendRequests();
+      getUsers()
     } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcceptOrRejectRequest = async (id, status) => {
+    try {
+      setLoading(true);
+      const payload = {
+        requestId: id,
+        status: status,
+      };
+      const response = await acceptOrRejectRequest(payload);
+      getFriendRequests();
+      getUsers()
+    } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -71,7 +90,6 @@ function AddFriend() {
     getFriendRequests();
   }, []);
 
-  console.log({friendRequests})
   return (
     <Grid2 container>
       <Grid2 item size={12}>
@@ -113,6 +131,15 @@ function AddFriend() {
           </Typography>
 
           <Grid2 container>
+            {loading && (
+              <CustomSkeleton
+                variant={"rectangular"}
+                height={"200px"}
+                width={"150px"}
+                borderRadius={"8px"}
+              />
+            )}
+
             {!loading && friendRequests?.length === 0 && (
               <div style={{ marginTop: "24px" }}>
                 <span
@@ -127,17 +154,21 @@ function AddFriend() {
               </div>
             )}
 
-            {friendRequests?.map((request) => {
-              return (
-                <AddFriendCard
-                  fname={request?.from?.fname}
-                  lname={request?.from?.lname}
-                  username={request?.from?.username}
-                  avatar={request?.from?.profileImg}
-                  status={request?.status}
-                />
-              );
-            })}
+            {!loading &&
+              friendRequests?.map((request) => {
+                return (
+                  <AddFriendCard
+                    key={request?._id}
+                    friendRequestId={request?._id}
+                    fname={request?.from?.fname}
+                    lname={request?.from?.lname}
+                    username={request?.from?.username}
+                    avatar={request?.from?.profileImg}
+                    status={request?.status}
+                    onAcceptOrReject={handleAcceptOrRejectRequest}
+                  />
+                );
+              })}
           </Grid2>
         </Grid2>
 
@@ -171,13 +202,15 @@ function AddFriend() {
                 <AddFriendCard
                   key={user?._id}
                   id={user?._id}
+                  friendRequestId={user?.friendRequestId}
                   fname={user?.fname}
                   lname={user?.lname}
                   username={user?.username}
                   avatar={user?.profileImg}
                   loading={loading}
-                  status={"not_friends"}
+                  status={user?.friendRequestStatus}
                   onSendFriendRequest={handleSendFriendRequest}
+                  onAcceptOrReject={handleAcceptOrRejectRequest}
                 />
               );
             })}

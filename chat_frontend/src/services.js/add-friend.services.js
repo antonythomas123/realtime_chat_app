@@ -2,25 +2,12 @@ import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-export const getAllUsers = async (payload) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/dashboard/get-all-users`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+const userId = localStorage.getItem("userId");
 
-    return response;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const getAllNonFriends = async () => {
-  const userId = localStorage.getItem("userId") || "679a48c7a473ee8514526800";
+export const getAllUsers = async () => {
   try {
     const response = await axios.get(
-      `${BASE_URL}/friend-request/get-non-friends/${userId}`,
+      `${BASE_URL}/friend-request/get-all-users/${userId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +30,7 @@ export const sendFriendRequest = async (payload) => {
         headers: {
           "Content-Type": "application/json",
         },
-      },
+      }
     );
 
     return response;
@@ -53,10 +40,27 @@ export const sendFriendRequest = async (payload) => {
 };
 
 export const getAllFriendRequests = async () => {
-  const userId = localStorage.getItem("userId") || "679a48c7a473ee8514526800";
   try {
     const response = await axios.get(
       `${BASE_URL}/friend-request/get-all-friend-requests/${userId}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const acceptOrRejectRequest = async (payload) => {
+  try {
+    const response = await axios.put(
+      `${BASE_URL}/friend-request/accept-or-reject-request`,
+      payload,
       {
         headers: {
           "Content-Type": "application/json",
