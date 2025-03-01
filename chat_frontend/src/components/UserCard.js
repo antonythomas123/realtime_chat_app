@@ -1,8 +1,7 @@
-import { PersonAdd } from "@mui/icons-material";
 import { Avatar } from "@mui/material";
 import React from "react";
 
-export const UserCard = ({ profile, name, onClick }) => {
+export const UserCard = ({ profile, name, user, onUserSelect }) => {
   return (
     <div
       style={{
@@ -13,16 +12,15 @@ export const UserCard = ({ profile, name, onClick }) => {
         borderBottom: "1px solid #E6E7EA",
         cursor: "pointer",
       }}
-      onClick={() => onClick()}
+      onClick={() => onUserSelect(user)}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <Avatar src={profile} alt=""/>
+        <Avatar src={profile} alt="" />
 
         <div>
-          <span style={{ color: "#02142E", fontSize: "14px" }}>{name}</span>
+          <span style={{ color: "#02142E", fontSize: "12px" }}>{name}</span>
         </div>
       </div>
-
     </div>
   );
 };

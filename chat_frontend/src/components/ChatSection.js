@@ -3,7 +3,7 @@ import { Avatar, IconButton } from "@mui/material";
 import React from "react";
 import { ChatWallpaper } from "../assets";
 
-const ChatHeader = () => {
+const ChatHeader = ({ username, fname, lname, profileImg }) => {
   return (
     <header
       style={{
@@ -13,7 +13,7 @@ const ChatHeader = () => {
       }}
     >
       <div style={{ display: "flex", gap: "12px" }}>
-        <Avatar />
+        <Avatar src={profileImg} alt="" />
 
         <div
           style={{
@@ -26,12 +26,12 @@ const ChatHeader = () => {
           <span
             style={{ color: "#02142E", fontSize: "14px", fontWeight: "500" }}
           >
-            Antony Thomas
+            {fname} {lname}
           </span>
           <span
             style={{ color: "#5B6675", fontWeight: "400", fontSize: "12px" }}
           >
-            Online
+            {username}
           </span>
         </div>
       </div>
@@ -74,10 +74,15 @@ const ChatInput = () => {
   );
 };
 
-function ChatSection() {
+function ChatSection({ selectedUser }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "80vh" }}>
-      <ChatHeader />
+      <ChatHeader
+        username={selectedUser?.username}
+        fname={selectedUser?.fname}
+        lname={selectedUser?.lname}
+        profileImg={selectedUser?.profileImg}
+      />
 
       <div
         style={{

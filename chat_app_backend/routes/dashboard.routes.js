@@ -3,14 +3,21 @@ import User from "../models/UserModel.js";
 
 const router = express.Router();
 
-router.get("/get-all-users", async (req, res) => {
+router.get("/get-all-friends/:userId", async (req, res) => {
   try {
-    const users = await User.find(
-      {},
-      { _id: 0, fname: 1, lname: 1, username: 1, profileImg: 1 }
-    );
+    const { userId } = req.params;
+    const currentUser = await User.findById(userId).select("friends");
 
-    return res.status(200).json({ users });
+    if (!currentUser) {
+      console.log("User not found");
+      return res.status(400).json({ message: "User not found" });
+    }
+
+    const friends = await User.find({
+      _id: { $in: currentUser.friends, $ne: userId },
+    }).select("-password -friends");
+
+    return res.status(200).json({ friends });
   } catch (error) {
     return res.status(500).json({ message: "Something went wrong", error });
   }
@@ -31,6 +38,5 @@ router.get("/get-user-by-username/:username", async (req, res) => {
       .json({ message: "Something went wrong", error: error });
   }
 });
-
 
 export default router;

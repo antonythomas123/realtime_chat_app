@@ -2,10 +2,10 @@ import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-const userId = localStorage.getItem("userId");
-
 export const getAllUsers = async () => {
   try {
+    const userId = localStorage.getItem("userId");
+
     const response = await axios.get(
       `${BASE_URL}/friend-request/get-all-users/${userId}`,
       {
@@ -41,6 +41,8 @@ export const sendFriendRequest = async (payload) => {
 
 export const getAllFriendRequests = async () => {
   try {
+    const userId = localStorage.getItem("userId");
+    
     const response = await axios.get(
       `${BASE_URL}/friend-request/get-all-friend-requests/${userId}`,
       {

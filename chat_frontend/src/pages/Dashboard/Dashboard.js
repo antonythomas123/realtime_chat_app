@@ -1,32 +1,34 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatSection, Navbar, Sidebar } from "../../components";
 import { Grid2 } from "@mui/material";
 import { getAllFriends } from "../../services.js/dashboard.services";
+import { LandingGif } from "../../assets";
 
 function Dashboard() {
-  const fileRef = useRef(null);
+  // const fileRef = useRef(null);
 
-  const [friends, setFriends] = useState([])
+  const [friends, setFriends] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-  const handleFileClick = () => {
-    if (fileRef.current) fileRef.current.click();
-  };
+  // const handleFileClick = () => {
+  //   if (fileRef.current) fileRef.current.click();
+  // };
 
-  const handleFileChange = (e) => {};
+  // const handleFileChange = (e) => {};
 
   const getFriends = async () => {
     try {
       const response = await getAllFriends();
-      setFriends(response?.data?.friends)
+      setFriends(response?.data?.friends);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    getFriends()
-  }, [])
-console.log({friends})
+    getFriends();
+  }, []);
+
   return (
     <Grid2 container>
       <Grid2 item size={12}>
@@ -53,7 +55,7 @@ console.log({friends})
               height: "100%",
             }}
           >
-            <Sidebar users={friends} />
+            <Sidebar users={friends} setSelectedUser={setSelectedUser} />
           </Grid2>
 
           <Grid2
@@ -63,7 +65,8 @@ console.log({friends})
               height: "100%",
             }}
           >
-            <ChatSection />
+            {selectedUser && <ChatSection selectedUser={selectedUser} />}
+            {!selectedUser && <img src={LandingGif} alt="" />}
           </Grid2>
         </Grid2>
       </Grid2>

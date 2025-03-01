@@ -2,7 +2,7 @@ import React from "react";
 import { UserCard } from "./UserCard";
 import { CustomSearch } from "./CustomSearch";
 
-function Sidebar({ users }) {
+function Sidebar({ users, setSelectedUser }) {
   return (
     <div
       style={{
@@ -19,7 +19,12 @@ function Sidebar({ users }) {
         <div>
           {users?.map((user) => {
             return (
-              <UserCard profile={user?.profileImg} name={user?.username} />
+              <UserCard
+                user={user}
+                profile={user?.profileImg}
+                name={user?.username}
+                onUserSelect={(user) => setSelectedUser(user)}
+              />
             );
           })}
         </div>

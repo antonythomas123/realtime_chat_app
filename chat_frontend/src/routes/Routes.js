@@ -9,24 +9,24 @@ const RoutesConfig = () => {
       path: "/login",
       component: SignIn,
       isProtected: false,
-      redirectTo: "/",
+      redirectTo: "/dashboard",
     },
     {
       path: "/sign-up",
       component: SignUp,
       isProtected: false,
-      redirectTo: "/",
+      redirectTo: "/dashboard",
     },
     {
       path: "/dashboard",
       component: Dashboard,
-      isProtected: false,
+      isProtected: true,
       redirectTo: "/login",
     },
     {
       path: "/add-friend",
       component: AddFriend,
-      isProtected: false,
+      isProtected: true,
       redirectTo: "/login",
     },
   ];
@@ -51,7 +51,7 @@ const RoutesConfig = () => {
           path="*"
           element={
             <Navigate
-              to={localStorage.getItem("token") ? "/" : "/login"}
+              to={localStorage.getItem("token") ? "/dashboard" : "/login"}
               replace
             />
           }
