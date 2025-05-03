@@ -1,7 +1,10 @@
 import { Avatar } from "@mui/material";
-import React from "react";
+import React, { useContext } from "react";
+import { store } from "../providers/AuthProvider";
 
 export const UserCard = ({ profile, name, user, onUserSelect }) => {
+  const { onlineUsers } = useContext(store);
+
   return (
     <div
       style={{
@@ -15,7 +18,22 @@ export const UserCard = ({ profile, name, user, onUserSelect }) => {
       onClick={() => onUserSelect(user)}
     >
       <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <Avatar src={profile} alt="" />
+        <div style={{ position: "relative" }}>
+          <Avatar src={profile} alt="" />
+          {onlineUsers?.includes(user?._id) && (
+            <div
+              style={{
+                position: "absolute",
+                background: "#0BDA51",
+                width: "10px",
+                height: "10px",
+                borderRadius: "100px",
+                bottom: 0,
+                right: 2,
+              }}
+            ></div>
+          )}
+        </div>
 
         <div>
           <span style={{ color: "#02142E", fontSize: "12px" }}>{name}</span>

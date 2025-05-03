@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 import { login } from "../../services.js/auth.services";
 import { store } from "../../providers/AuthProvider";
 import { LandingCover, LandingGif } from "../../assets";
+import { io } from "socket.io-client";
 
 function SignIn() {
   const navigate = useNavigate();
 
-  const { isLoggedIn, setIsLoggedIn } = useContext(store);
+  const { isLoggedIn, setIsLoggedIn, socket, setSocket, setOnlineUsers } = useContext(store);
 
   const [credentials, setCredentials] = useState({
     username: "",
@@ -46,6 +47,20 @@ function SignIn() {
         setIsLoggedIn(true);
         localStorage.setItem("token", response?.token);
         localStorage.setItem("userId", response?.userId);
+
+        const socket = io("http://localhost:3001", {
+          query: {
+            userId: response?.userId
+          }
+        });
+
+        socket.on("getOnlineUsers", (usersIds) => {
+          setOnlineUsers(usersIds)
+        });
+
+        socket.connect();
+        setSocket(socket);
+
         navigate("/dashboard");
       }
     } catch (error) {

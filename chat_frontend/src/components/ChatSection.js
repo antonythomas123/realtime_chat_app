@@ -1,7 +1,10 @@
+import React, { useEffect, useContext, useState, useRef } from "react";
 import { SendOutlined } from "@mui/icons-material";
 import { Avatar, IconButton } from "@mui/material";
-import React from "react";
 import { ChatWallpaper } from "../assets";
+import { getAllMessages, sendMessage } from "../services.js/dashboard.services";
+import { store } from "../providers/AuthProvider";
+import styles from "./styles.css";
 
 const ChatHeader = ({ username, fname, lname, profileImg }) => {
   return (
@@ -31,7 +34,7 @@ const ChatHeader = ({ username, fname, lname, profileImg }) => {
           <span
             style={{ color: "#5B6675", fontWeight: "400", fontSize: "12px" }}
           >
-            {username}
+            @{username}
           </span>
         </div>
       </div>
@@ -39,7 +42,7 @@ const ChatHeader = ({ username, fname, lname, profileImg }) => {
   );
 };
 
-const ChatInput = () => {
+const ChatInput = ({ message, setMessage, handleMessageSend }) => {
   return (
     <footer
       style={{
@@ -51,6 +54,8 @@ const ChatInput = () => {
         <input
           type="text"
           placeholder="Type a message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           style={{
             border: "1px solid #E6E7EA",
             outline: "none",
@@ -64,7 +69,7 @@ const ChatInput = () => {
           }}
         />
 
-        <IconButton>
+        <IconButton onClick={handleMessageSend}>
           <SendOutlined
             sx={{ color: "#0B69F4", height: "25px", width: "25px" }}
           />
@@ -75,6 +80,63 @@ const ChatInput = () => {
 };
 
 function ChatSection({ selectedUser }) {
+  const { socket } = useContext(store);
+
+  const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  const messageEndRef = useRef(null);
+
+  function formatMessageTime(date) {
+    return new Date(date).toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  }
+
+  const handleMessageSend = async () => {
+    try {
+      const response = await sendMessage(selectedUser?._id, message);
+      setMessage("");
+      setMessages((prev) => [...prev, response?.data]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMessages = async () => {
+    try {
+      const response = await getAllMessages(selectedUser?._id);
+      setMessages(response?.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedUser?._id) {
+      getMessages();
+
+      console.log({ socket });
+      socket.on("newMessage", (newMessage) => {
+        console.log({ newMessage });
+        if (newMessage?.sender !== selectedUser?._id) return;
+        setMessages((prev) => [...prev, newMessage]);
+      });
+    }
+
+    return () => {
+      socket.off("newMessage");
+    };
+  }, [selectedUser, socket]);
+
+  useEffect(() => {
+    if (messageEndRef.current && messages)
+      messageEndRef.current.scrollIntoView({ behaviour: "smooth" });
+  }, [messages]);
+
+  console.log({ selectedUser });
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "80vh" }}>
       <ChatHeader
@@ -84,7 +146,7 @@ function ChatSection({ selectedUser }) {
         profileImg={selectedUser?.profileImg}
       />
 
-      <div
+      {/* <div
         style={{
           height: "90%",
           background: `url(${ChatWallpaper})`,
@@ -93,10 +155,56 @@ function ChatSection({ selectedUser }) {
           overflowY: "auto",
         }}
       >
-        fdsk
+        {messages?.map((message) => {
+          return (
+            <div
+              key={message?._id}
+              className={`chat ${
+                message?.sender === localStorage.getItem("userId")
+                  ? "chat-end"
+                  : "chat-start"
+              }`}
+              ref={messageEndRef}
+            >
+              <div style={{ color: "#111111" }}>{message?.message}</div>
+            </div>
+          );
+        })}
+      </div> */}
+
+      <div className="chat-container">
+        {messages.map((message) => (
+          <div
+            key={message?._id}
+            className={`chat ${
+              message.sender === localStorage.getItem("userId")
+                ? "chat-end"
+                : "chat-start"
+            }`}
+            ref={messageEndRef}
+          >
+            <div className="chat-header">
+              <time>{formatMessageTime(message?.createdAt)}</time>
+            </div>
+            <div className="chat-bubble">
+              {message?.image && (
+                <img
+                  src={message?.image}
+                  alt="Attachment"
+                  className="chat-image"
+                />
+              )}
+              {message?.message && <p>{message?.message}</p>}
+            </div>
+          </div>
+        ))}
       </div>
 
-      <ChatInput />
+      <ChatInput
+        message={message}
+        setMessage={setMessage}
+        handleMessageSend={handleMessageSend}
+      />
     </div>
   );
 }

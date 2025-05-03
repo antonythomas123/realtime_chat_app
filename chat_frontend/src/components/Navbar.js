@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   AppBar,
   Avatar,
@@ -12,14 +12,38 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { ForumOutlined, PersonAddOutlined, QuestionAnswer } from "@mui/icons-material";
+import {
+  ForumOutlined,
+  PersonAddOutlined,
+  QuestionAnswer,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+import { store } from "../providers/AuthProvider";
 
 function Navbar({ showAddFriend, showDashboard }) {
   const navigate = useNavigate();
+
+  const { socket } = useContext(store);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const settings = [
+    {
+      name: "Profile",
+      onClick: () => handleProfileClick(),
+    },
+    {
+      name: "Logout",
+      onClick: () => handleLogout(),
+    },
+  ];
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleLogout = () => {
+    socket.disconnect()
+  };
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -94,9 +118,9 @@ function Navbar({ showAddFriend, showDashboard }) {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={setting?.onClick}>
                   <Typography sx={{ textAlign: "center" }}>
-                    {setting}
+                    {setting?.name}
                   </Typography>
                 </MenuItem>
               ))}
