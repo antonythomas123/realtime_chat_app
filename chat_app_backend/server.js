@@ -5,10 +5,11 @@ import cors from "cors";
 import { dbConnect } from "./db/dbConnect.js";
 import authRoutes from "./routes/auth.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
-import friendRequestRoutes from './routes/friend-requests.routes.js'
+import friendRequestRoutes from "./routes/friend-requests.routes.js";
+import messageRoutes from './routes/message.routes.js'
 import auth from "./auth.js";
+import { app, server } from "./lib/socket.js";
 
-const app = express();
 
 dotenv.config();
 
@@ -31,8 +32,9 @@ app.get("/protected", auth, (req, res) => {
 });
 
 app.use("/dashboard", dashboardRoutes);
-app.use("/friend-request", friendRequestRoutes)
+app.use("/friend-request", friendRequestRoutes);
+app.use("/messages", messageRoutes)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
