@@ -4,7 +4,7 @@ import { Avatar, IconButton } from "@mui/material";
 import { ChatWallpaper } from "../assets";
 import { getAllMessages, sendMessage } from "../services.js/dashboard.services";
 import { store } from "../providers/AuthProvider";
-import styles from "./styles.css";
+import "./styles.css";
 
 const ChatHeader = ({ username, fname, lname, profileImg }) => {
   return (
