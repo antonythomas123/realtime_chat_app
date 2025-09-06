@@ -136,7 +136,6 @@ function ChatSection({ selectedUser }) {
       messageEndRef.current.scrollIntoView({ behaviour: "smooth" });
   }, [messages]);
 
-  console.log({ selectedUser });
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "80vh" }}>
       <ChatHeader
@@ -194,7 +193,7 @@ function ChatSection({ selectedUser }) {
                   className="chat-image"
                 />
               )}
-              {message?.message && <p>{message?.message}</p>}
+              {message?.message && <p style={{color: '#111'}}>{message?.message}</p>}
             </div>
           </div>
         ))}
